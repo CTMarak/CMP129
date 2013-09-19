@@ -10,12 +10,23 @@ namespace ConsoleYoYo
     {
         static void Main(string[] args)
         {
+            var r = new Random();
+            int yoyoCount,yoyoLen,yoyoX,yoyoTimes,fieldLen;
+            ConsoleColor yoyoColor;
+            int yoyoY = 5;
+            var startColor = ConsoleColor.DarkBlue;
+
             List<YoYo> myYoYos = new List<YoYo>();
-            myYoYos.Add(new YoYo(ConsoleColor.Magenta, 8, 4, 7, 2));
-            myYoYos.Add(new YoYo(ConsoleColor.Yellow, 15, 15, 1, 1));
-            myYoYos.Add(new YoYo(ConsoleColor.Green, 12, 7, 6, 1));
-            myYoYos.Add(new YoYo(ConsoleColor.White, 6, 13, 13, 3));
-            myYoYos.Add(new YoYo(ConsoleColor.Blue, 7, 6, 3, 2));
+            yoyoCount = r.Next(1, 16);
+            fieldLen = (80 / yoyoCount);
+            for (int i = 0; i < yoyoCount; i++)
+            {
+                yoyoColor = startColor + i;
+                yoyoLen = r.Next(2, 16);
+                yoyoX = i * fieldLen + r.Next(0, fieldLen + 1);
+                yoyoTimes = r.Next(1, 6);
+                myYoYos.Add(new YoYo(yoyoColor, yoyoLen, yoyoX, yoyoY, yoyoTimes));
+            }
 
             Console.Clear();
 
@@ -29,8 +40,8 @@ namespace ConsoleYoYo
                     yoyo.UpdateYoYo();
                     yoyo.DrawYoYo();
                     allDone = (allDone && yoyo.Done);
-                    Thread.Sleep(100);
                 }
+                Thread.Sleep(100);
             } while (!allDone);
 
             Console.ForegroundColor = ConsoleColor.White;
@@ -139,6 +150,7 @@ namespace ConsoleYoYo
         public void DrawYoYo()
         {
             Console.ForegroundColor = color;
+            /*
             if (yIdx == 0)
             {
                 Console.SetCursorPosition(xPos, yPos + yIdx - 1);
@@ -168,6 +180,16 @@ namespace ConsoleYoYo
                     Console.SetCursorPosition(xPos, yPos + yIdx + 1);
                     Console.Write(" ");
                 }
+            }
+            */
+            for (int i = 0; i < yIdx; i++)
+            {
+                Console.SetCursorPosition(xPos, yPos + yIdx);
+                Console.Write("|");
+                Console.SetCursorPosition(xPos, yPos + yIdx + 1);
+                Console.Write("@");
+                Console.SetCursorPosition(xPos, yPos + yIdx + 2);
+                Console.Write(" ");
             }
         }
 
