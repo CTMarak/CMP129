@@ -11,21 +11,25 @@ namespace ConsoleYoYo
         static void Main(string[] args)
         {
             var r = new Random();
-            int yoyoCount,yoyoLen,yoyoX,yoyoTimes,fieldLen;
-            ConsoleColor yoyoColor;
-            int yoyoY = 5;
-            var startColor = ConsoleColor.DarkBlue;
+
+            int yoyoCount,yoyoLen,yoyoX,yoyoY,yoyoTimes,yoyoHangs,fieldLen;
+            ConsoleColor yoyoColor = ConsoleColor.Black;
 
             List<YoYo> myYoYos = new List<YoYo>();
+
             yoyoCount = r.Next(1, 16);
+
             fieldLen = (80 / yoyoCount);
+
             for (int i = 0; i < yoyoCount; i++)
             {
-                yoyoColor = startColor + i;
+                yoyoColor++;
                 yoyoLen = r.Next(2, 16);
                 yoyoX = i * fieldLen + r.Next(0, fieldLen + 1);
+                yoyoY = r.Next(0, 11);
                 yoyoTimes = r.Next(1, 6);
-                myYoYos.Add(new YoYo(yoyoColor, yoyoLen, yoyoX, yoyoY, yoyoTimes));
+                yoyoHangs = r.Next(0, 6);
+                myYoYos.Add(new YoYo(yoyoColor, yoyoLen, yoyoX, yoyoY, yoyoTimes,yoyoHangs));
             }
 
             Console.Clear();
@@ -63,19 +67,22 @@ namespace ConsoleYoYo
         int xPos = 5;
         int yPos = 5;
         int runTime = 1;
+        int hangTime = 0;
 
         Direction currentDirection = Direction.DOWN;
-        int yIdx = 0;
+        int yIdx = -1;
         int pass = 0;
+        int hangPass = 0;
         bool done = false;
 
-        public YoYo(ConsoleColor decColor = ConsoleColor.White, int decLength = 10, int decX = 5, int decY = 5, int decTimes = 1)
+        public YoYo(ConsoleColor decColor = ConsoleColor.White, int decLength = 10, int decX = 5, int decY = 5, int decTimes = 1, int decHangs = 0)
         {
             color = decColor;
             length = decLength;
             xPos = decX;
             yPos = decY;
             runTime = decTimes;
+            hangTime = decHangs;
         }
 
         public bool Done
@@ -87,6 +94,12 @@ namespace ConsoleYoYo
         {
             get { return runTime; }
             set { runTime = value; }
+        }
+
+        public int HangTime
+        {
+            get { return hangTime; }
+            set { hangTime = value; }
         }
 
         public int Length
@@ -125,19 +138,29 @@ namespace ConsoleYoYo
             {
                 if (currentDirection == Direction.DOWN)
                 {
-                    yIdx += 1;
-                    if (yIdx == length - 1)
+                    if (yIdx != length) yIdx++;
+
+                    if (yIdx == length)
                     {
-                        currentDirection = Direction.UP;
+                        if (hangPass < hangTime)
+                        {
+                            hangPass++;
+                        }
+                        else
+                        {
+                            currentDirection = Direction.UP;
+                        }
                     }
                 }
                 else
                 {
-                    yIdx -= 1;
+                    yIdx--;
+
                     if (yIdx == 0)
                     {
                         currentDirection = Direction.DOWN;
-                        pass += 1;
+                        hangPass = 0;
+                        pass++;
                         if (pass == runTime)
                         {
                             done = true;
@@ -150,47 +173,15 @@ namespace ConsoleYoYo
         public void DrawYoYo()
         {
             Console.ForegroundColor = color;
-            /*
-            if (yIdx == 0)
-            {
-                Console.SetCursorPosition(xPos, yPos + yIdx - 1);
-                Console.Write(" ");
-                Console.SetCursorPosition(xPos, yPos);
-                Console.Write("@");
-                Console.SetCursorPosition(xPos, yPos + yIdx + 1);
-                Console.Write(" ");
-            }
-            else
-            {
-                if (currentDirection == Direction.UP)
-                {
-                    Console.SetCursorPosition(xPos, yPos + yIdx - 1);
-                    Console.Write("|");
-                    Console.SetCursorPosition(xPos, yPos + yIdx);
-                    Console.Write("@");
-                    Console.SetCursorPosition(xPos, yPos + yIdx + 1);
-                    Console.Write(" ");
-                }
-                else
-                {
-                    Console.SetCursorPosition(xPos, yPos + yIdx - 1);
-                    Console.Write("|");
-                    Console.SetCursorPosition(xPos, yPos + yIdx);
-                    Console.Write("@");
-                    Console.SetCursorPosition(xPos, yPos + yIdx + 1);
-                    Console.Write(" ");
-                }
-            }
-            */
             for (int i = 0; i < yIdx; i++)
             {
-                Console.SetCursorPosition(xPos, yPos + yIdx);
+                Console.SetCursorPosition(xPos, yPos + i);
                 Console.Write("|");
-                Console.SetCursorPosition(xPos, yPos + yIdx + 1);
-                Console.Write("@");
-                Console.SetCursorPosition(xPos, yPos + yIdx + 2);
-                Console.Write(" ");
             }
+            Console.SetCursorPosition(xPos, yPos + yIdx);
+            Console.Write("@");
+            Console.SetCursorPosition(xPos, yPos + yIdx + 1);
+            Console.Write(" ");
         }
 
     }
