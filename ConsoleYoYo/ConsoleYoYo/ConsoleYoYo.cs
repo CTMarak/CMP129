@@ -12,25 +12,37 @@ namespace ConsoleYoYo
         {
             var r = new Random();
 
-            int yoyoCount,yoyoLen,yoyoX,yoyoY,yoyoTimes,yoyoHangs,fieldLen;
+            int yoyoPairs,yoyoLen,yoyoX,yoyoY,yoyoTimes,yoyoHangs,fieldLen;
             ConsoleColor yoyoColor = ConsoleColor.Black;
 
             List<YoYo> myYoYos = new List<YoYo>();
 
-            yoyoCount = r.Next(1, 16);
+            yoyoPairs = r.Next(1, 8);
 
-            fieldLen = (80 / yoyoCount);
+            fieldLen = (80 / (2 * yoyoPairs));
 
-            for (int i = 0; i < yoyoCount; i++)
+            for (int i = 0; i < yoyoPairs; i++)
             {
                 yoyoColor++;
                 yoyoLen = r.Next(2, 16);
-                yoyoX = i * fieldLen + r.Next(0, fieldLen + 1);
+                yoyoX = 2 * i * fieldLen + r.Next(0, fieldLen) + 1;
                 yoyoY = r.Next(0, 11);
                 yoyoTimes = r.Next(1, 6);
-                yoyoHangs = r.Next(0, 6);
-                myYoYos.Add(new YoYo(yoyoColor, yoyoLen, yoyoX, yoyoY, yoyoTimes,yoyoHangs));
+                myYoYos.Add(new YoYo(yoyoColor, yoyoLen, yoyoX, yoyoY, yoyoTimes));
+
+                yoyoColor++;
+                yoyoLen = r.Next(2, 16);
+                yoyoX = (2 * i + 1) * fieldLen + r.Next(0, fieldLen) + 1;
+                yoyoY = r.Next(0, 11);
+                yoyoTimes = r.Next(1, 6);
+                yoyoHangs = r.Next(2, 6);
+                myYoYos.Add(new TrickYoYo(yoyoHangs, yoyoColor, yoyoLen, yoyoX, yoyoY, yoyoTimes));
             }
+
+            //myYoYos.Add(new YoYo(++yoyoColor, 5, 1, 5, 3));
+            //myYoYos.Add(new YoYo(++yoyoColor, 5, 21, 5, 3));
+            //myYoYos.Add(new TrickYoYo(5, ++yoyoColor, 5, 41, 5, 3));
+            //myYoYos.Add(new TrickYoYo(5, ++yoyoColor, 5, 61, 5, 3));
 
             Console.Clear();
 
@@ -45,7 +57,7 @@ namespace ConsoleYoYo
                     yoyo.DrawYoYo();
                     allDone = (allDone && yoyo.Done);
                 }
-                Thread.Sleep(100);
+                Thread.Sleep(200);
             } while (!allDone);
 
             Console.ForegroundColor = ConsoleColor.White;
@@ -63,26 +75,31 @@ namespace ConsoleYoYo
     public class YoYo
     {
         ConsoleColor color = ConsoleColor.White;
-        int length = 10;
+        protected int length = 10;
         int xPos = 5;
         int yPos = 5;
-        int runTime = 1;
-        int hangTime = 0;
+        protected int runTime = 1;
+        char body = '0';
 
-        Direction currentDirection = Direction.DOWN;
-        int yIdx = -1;
-        int pass = 0;
-        int hangPass = 0;
-        bool done = false;
+        protected Direction currentDirection = Direction.DOWN;
+        protected int yIdx = -1;
+        protected int pass = 0;
+        protected bool done = false;
 
-        public YoYo(ConsoleColor decColor = ConsoleColor.White, int decLength = 10, int decX = 5, int decY = 5, int decTimes = 1, int decHangs = 0)
+        public YoYo(ConsoleColor decColor = ConsoleColor.White, int decLength = 10, int decX = 5, int decY = 5, int decTimes = 1, char decBody = '0')
         {
             color = decColor;
             length = decLength;
             xPos = decX;
             yPos = decY;
             runTime = decTimes;
-            hangTime = decHangs;
+            body = decBody;
+        }
+
+        public char Body
+        {
+            get { return body; }
+            set { body = value; }
         }
 
         public bool Done
@@ -94,12 +111,6 @@ namespace ConsoleYoYo
         {
             get { return runTime; }
             set { runTime = value; }
-        }
-
-        public int HangTime
-        {
-            get { return hangTime; }
-            set { hangTime = value; }
         }
 
         public int Length
@@ -132,7 +143,7 @@ namespace ConsoleYoYo
             set { color = value; }
         }
 
-        public void UpdateYoYo()
+        public virtual void UpdateYoYo()
         {
             if (!done)
             {
@@ -142,14 +153,7 @@ namespace ConsoleYoYo
 
                     if (yIdx == length)
                     {
-                        if (hangPass < hangTime)
-                        {
-                            hangPass++;
-                        }
-                        else
-                        {
-                            currentDirection = Direction.UP;
-                        }
+                        currentDirection = Direction.UP;
                     }
                 }
                 else
@@ -159,7 +163,6 @@ namespace ConsoleYoYo
                     if (yIdx == 0)
                     {
                         currentDirection = Direction.DOWN;
-                        hangPass = 0;
                         pass++;
                         if (pass == runTime)
                         {
@@ -170,7 +173,7 @@ namespace ConsoleYoYo
             }
         }
 
-        public void DrawYoYo()
+        public virtual void DrawYoYo()
         {
             Console.ForegroundColor = color;
             for (int i = 0; i < yIdx; i++)
@@ -179,9 +182,45 @@ namespace ConsoleYoYo
                 Console.Write("|");
             }
             Console.SetCursorPosition(xPos, yPos + yIdx);
-            Console.Write("@");
+            Console.Write(body);
             Console.SetCursorPosition(xPos, yPos + yIdx + 1);
             Console.Write(" ");
+        }
+
+    }
+
+    public class TrickYoYo : YoYo
+    {
+        int hangTime = 0;
+        protected int hangPass = 0;
+
+        public TrickYoYo(int decHangs = 0, ConsoleColor decColor = ConsoleColor.White, int decLength = 10, int decX = 5, int decY = 5, int decTimes = 1, char decBody = '@')
+            :base(decColor, decLength, decX, decY, decTimes, decBody)
+        {
+            hangTime = decHangs;
+        }
+
+        public int HangTime
+        {
+            get { return hangTime; }
+            set { hangTime = value; }
+        }
+
+        public override void UpdateYoYo()
+        {
+            if (yIdx == length)
+            {
+                if (hangPass < hangTime)
+                {
+                    hangPass++;
+                    return;
+                }
+                else
+                {
+                    hangPass = 0;
+                }
+            }
+            base.UpdateYoYo();
         }
 
     }
