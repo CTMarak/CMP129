@@ -79,14 +79,14 @@ namespace ConsoleYoYo
         int xPos = 5;
         int yPos = 5;
         protected int runTime = 1;
-        char body = '0';
+        protected string body = "0";
 
         protected Direction currentDirection = Direction.DOWN;
         protected int yIdx = -1;
         protected int pass = 0;
         protected bool done = false;
 
-        public YoYo(ConsoleColor decColor = ConsoleColor.White, int decLength = 10, int decX = 5, int decY = 5, int decTimes = 1, char decBody = '0')
+        public YoYo(ConsoleColor decColor = ConsoleColor.White, int decLength = 10, int decX = 5, int decY = 5, int decTimes = 1, string decBody = "0")
         {
             color = decColor;
             length = decLength;
@@ -96,7 +96,7 @@ namespace ConsoleYoYo
             body = decBody;
         }
 
-        public char Body
+        public string Body
         {
             get { return body; }
             set { body = value; }
@@ -182,7 +182,7 @@ namespace ConsoleYoYo
                 Console.Write("|");
             }
             Console.SetCursorPosition(xPos, yPos + yIdx);
-            Console.Write(body);
+            Console.Write(body[0]);
             Console.SetCursorPosition(xPos, yPos + yIdx + 1);
             Console.Write(" ");
         }
@@ -193,8 +193,9 @@ namespace ConsoleYoYo
     {
         int hangTime = 0;
         protected int hangPass = 0;
+        protected string holdBody;
 
-        public TrickYoYo(int decHangs = 0, ConsoleColor decColor = ConsoleColor.White, int decLength = 10, int decX = 5, int decY = 5, int decTimes = 1, char decBody = '@')
+        public TrickYoYo(int decHangs = 0, ConsoleColor decColor = ConsoleColor.White, int decLength = 10, int decX = 5, int decY = 5, int decTimes = 1, string decBody = "@")
             :base(decColor, decLength, decX, decY, decTimes, decBody)
         {
             hangTime = decHangs;
@@ -212,11 +213,17 @@ namespace ConsoleYoYo
             {
                 if (hangPass < hangTime)
                 {
+                    if (hangPass == 0)
+                    {
+                        holdBody = base.body;
+                    }
                     hangPass++;
+                    base.body = hangPass.ToString();
                     return;
                 }
                 else
                 {
+                    base.body = holdBody;
                     hangPass = 0;
                 }
             }

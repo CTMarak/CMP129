@@ -1,0 +1,3 @@
+Have the 2 players "Roll" each a 6-sided die
+at the end of each round ask the player if they want to roll again
+the object of the game is to get as close to 21 as possible without going over
