@@ -39,7 +39,7 @@ namespace game21
                         roll = r.Next(1, 7);
                         Console.WriteLine("You rolled " + roll.ToString() + "!");
                         playerScore += roll;
-                        if (playerScore == 21 || (playerScore > computerScore && computerDone))
+                        if (playerScore == 21 || (playerScore <= 21 && playerScore > computerScore && computerDone))
                         {
                             playerWins = true;
                         }
@@ -61,7 +61,7 @@ namespace game21
                         roll = r.Next(1, 7);
                         Console.WriteLine("Opponent rolled " + roll.ToString() + "!");
                         computerScore += roll;
-                        if (computerScore == 21 || (computerScore > playerScore && playerDone))
+                        if (computerScore == 21 || (computerScore <= 21 && computerScore > playerScore && playerDone))
                         {
                             computerWins = true;
                         }

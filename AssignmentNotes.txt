@@ -3,3 +3,9 @@ Have the 2 players "Roll" a 6-sided die
 at the end of each round ask the player if they want to roll again
 
 the object of the game is to get as close to 21 as possible without going over
+
+Goto projectEuler.net
+click on problems at the top
+complete problems 1, 2, 5 and any 2 others
+due 10/31
+no class next week
