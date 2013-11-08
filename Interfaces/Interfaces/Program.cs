@@ -19,7 +19,8 @@ namespace Interfaces
             computables.Add(new Problem1());
             computables.Add(new Problem2());
             computables.Add(new Problem3());
-            computables.Add(new Problem5());
+            computables.Add(new Problem5a());
+//            computables.Add(new Problem5());
             computables.Add(new Problem7());
 
             foreach (IComputable computable in computables)
@@ -134,6 +135,52 @@ namespace Interfaces
             public string Problem    { get { return "5. What is the smallest no. > 0 divisible by all nos. 1 to 20?"; } }
             public string AnswerDesc { get { return "   The smallest no. > 0 divisible by all nos. 1 to 20 is"; } }
        }
+
+        public class Problem5a : IComputable
+        {
+            const Int64 LIMIT = 42;
+            public Int64 Answer
+            {
+                get
+                {
+                    Int64 smallest = 1;
+                    int primeCt = 0;
+                    Int64[] AllPrimes = new Int64[LIMIT];
+                    int[] AllExponents = new int[LIMIT];
+                    int[] CurExponents = new int[LIMIT];
+                    for (Int64 i = 2; i <= LIMIT; i++)
+                    {
+                        if ( Toolset.IsPrime(i) )
+                        {
+                            AllPrimes[primeCt] = i;
+                            AllExponents[primeCt] = 0;
+                            primeCt += 1;
+                        }
+                    }
+                    for (Int64 i = 2; i <= LIMIT; i++)
+                    {
+                        Int64 dividend = i;
+                        for (int j = 0; j < primeCt; j++)
+                        {
+                            CurExponents[j] = 0;
+                            while (dividend % AllPrimes[j] == 0)
+                            {
+                                CurExponents[j] += 1;
+                                if (CurExponents[j] > AllExponents[j])
+                                {
+                                    smallest = smallest * AllPrimes[j];
+                                    AllExponents[j] = CurExponents[j];
+                                }
+                                dividend = dividend / AllPrimes[j];
+                            }
+                        }
+                    }
+                    return smallest;
+                }
+            }
+            public string Problem { get { return "5. What is the smallest no. > 0 divisible by all nos. 1 to " + LIMIT.ToString() + "?"; } }
+            public string AnswerDesc { get { return "   The smallest no. > 0 divisible by all nos. 1 to " + LIMIT.ToString() + " is"; } }
+        }
 
         public class Problem7 : IComputable
         {
