@@ -1,0 +1,4 @@
+C:\Users\ehstudent\Desktop\CMP129\Generics\Generics\bin\Debug\Generics.exe
+C:\Users\ehstudent\Desktop\CMP129\Generics\Generics\bin\Debug\Generics.pdb
+C:\Users\ehstudent\Desktop\CMP129\Generics\Generics\obj\x86\Debug\Generics.exe
+C:\Users\ehstudent\Desktop\CMP129\Generics\Generics\obj\x86\Debug\Generics.pdb
