@@ -2,3 +2,5 @@ C:\Users\eh203\Desktop\CMP129\Events\Events\bin\Debug\Events.exe
 C:\Users\eh203\Desktop\CMP129\Events\Events\bin\Debug\Events.pdb
 C:\Users\eh203\Desktop\CMP129\Events\Events\obj\x86\Debug\Events.exe
 C:\Users\eh203\Desktop\CMP129\Events\Events\obj\x86\Debug\Events.pdb
+C:\Users\ehstudent\Desktop\CMP129\Events\Events\obj\x86\Debug\Events.exe
+C:\Users\ehstudent\Desktop\CMP129\Events\Events\obj\x86\Debug\Events.pdb
